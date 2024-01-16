@@ -17,7 +17,7 @@
 
     使用此脚本需要输入 **主视角手牌** 和 **四家牌河信息**、**副露信息** 其余留空
 
-    ![image](https://github.com/wuye999/tenhou/assets/79479594/044c983d-ff32-4a4a-a28d-08246e0f5675)
+    ![image](https://github.com/wuye999/tenhou/assets/79479594/0952be62-cba8-4877-bfbf-5e926339a303)
 
     然后执行脚本(python 脚本.py)，会自动生成完整的取牌，出牌部分。
 
@@ -27,7 +27,7 @@
 
 4. 结果
 
-    ![image](https://github.com/wuye999/tenhou/assets/79479594/16f61c7c-ef5f-46d8-baf2-6d427981978a)
+    ![image](https://github.com/wuye999/tenhou/assets/79479594/df62c44f-25af-4f7b-9bc2-4869a3d10911)
 
 5. 问题
 
