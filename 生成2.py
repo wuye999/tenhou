@@ -1,45 +1,46 @@
 ######################################
-# 对牌谱中的手牌、牌河、点数状况等信息进行自定义编辑，并生成天凤牌谱链接
+# 根据可见手牌和牌河生成天凤牌谱。或者对牌谱中的手牌、牌河、点数状况等信息进行自定义编辑，并生成天凤牌谱链接
 # 多个副露请用空格隔开，如"55碰5z 吃340s"
 # 指定副露时，相关牌河里一定要有打出被副露的牌。例如指定碰对家8s，对家牌河需要存在8s才能被碰。
+# 不能出现4枚以上一样的牌，不能出现2枚相同的赤宝牌，不能设置吃或碰后模切，否则会报错
 
-# 牌河手模切：手切标志无，模切标志"d"。  手切8s:"8s"   模切8s:"d8s"
-# 立直：立直标志"r"，立直后无需模切标志，统统模切。   打8s立直:"r8s7s"
-# 副露
+# 牌河手模切写法：手切标志无，模切标志"d"。  手切8s:"8s"   模切8s:"d8s"
+# 立直写法：立直标志"r"，立直后无需模切标志，统统模切。   打8s立直:"r8s"    模切8s立直"dr8s"
+# 副露写法
 ## 吃。    13m吃2m:"吃213m"。
 ## 碰。    碰上家8s:"碰888s"   碰对家8s:"8碰88s"    碰下家8s:"88碰8s"
 ## 杠。    杠上家8s:"杠8888s"  杠对家8s:"8杠888s"   杠下家8s:"888杠8s"
 ## 暗杠。  暗杠8s:"888暗8m"
 ## 加杠。  碰上家8s,之后加杠8s:"碰888s 加8888s"   碰对家8s,之后加杠8s:"8碰88s 8加888s"   碰下家8s,之后加杠8s:"88碰8s 88加88s"
 assign = {
-    '场局次': '南4局',
-    '本场数': 2,
+    '场局次': '东1局',
+    '本场数': 0,
     '场供': 1,
-    '朵拉指示牌': "6s",
+    '朵拉指示牌': "8p",
     '里朵拉指示牌': "",
     "东家": {
-        '点数': 9800, 
-        '手牌': "", 
+        '点数': 24000, 
+        '手牌': "78m32547799s7m", 
         '副露': "", 
-        '牌河': "3z9s1pd2p8m9p1z4s5m"
+        '牌河': "3z1m8s1sd3z6zd4m1z"
         },  
     "南家": {
-        '点数': 25800, 
+        '点数': 25000, 
         '手牌': "", 
-        '副露': "", 
-        '牌河': "7z2z3m5zd1sd1zd4zd4z"
+        '副露': "碰888s 加8888s", 
+        '牌河': "3z1s5z7sd1p4s8p6p"
         },
     "西家": {
-        '点数': 31600, 
-        '手牌': "66m6p89s", 
-        '副露': "5碰55m 碰111z 碰555z", 
-        '牌河': "9p7z6z2p8m4sd4zd1m"
-        },
-    "北家": {
-        '点数': 31800, 
+        '点数': 25000, 
         '手牌': "", 
         '副露': "", 
-        '牌河': "9pd7z9sd7sd5s4z4pd7p"
+        '牌河': "4zd1s9m7z1z1pd2m8p"
+        },
+    "北家": {
+        '点数': 25000, 
+        '手牌': "", 
+        '副露': "", 
+        '牌河': "d1p2m7z3z2zd6zd5pd2zr5p"
         },
 }
 
@@ -104,7 +105,7 @@ def Inspection_dew(player):
             eaten = int (paizu[index + 1 : index + 3])  # 需要碰的牌
             if index == 0:  # 碰上家
                 if eaten == data[cycle_values(cycle_values(cycle_values(player)))]['最后出牌']:  # 与上家最后一次出牌对比
-                    print(data[cycle_values(cycle_values(cycle_values(player)))]['出牌'] )
+                    # print(data[cycle_values(cycle_values(cycle_values(player)))]['出牌'] )
                     
                     return paizu 
             elif index == 2:  # 碰对家  
@@ -158,7 +159,7 @@ def byexposed(player):
             return cycle_values(player)  # 匹配成功，该牌被下家吃
         # 检查下家是否要碰
         elif 'p' in paizu and out_draw == eaten and paizu[0] == 'p':
-            print(1)
+            # print(1)
             return cycle_values(player)  # 匹配成功，该牌被下家碰
         # 检查下家是否要杠
         elif 'm' in paizu and out_draw == eaten and paizu[0] == 'm':
@@ -239,8 +240,8 @@ def party(player):
         feel_draw = paizu
     elif is_r(data[player]['出牌']):  # 立直后。 需要立直时，先从牌库摸牌，立直后从预设牌河、牌山摸牌
         if data[player]['预设牌河对照']:
-            print(data[player]['预设牌河对照'])
-            print(data[player]['预设牌河'])
+            # print(data[player]['预设牌河对照'])
+            # print(data[player]['预设牌河'])
             out_draw = data[player]['预设牌河对照'][0]
             data[player]['预设牌河对照'].remove(out_draw)  # 删除选中的值
             # print(data[player]['预设手牌'])
@@ -257,9 +258,14 @@ def party(player):
             out_draw = data[player]['预设牌河对照'][0]
             data[player]['预设牌河对照'].remove(out_draw)  # 删除选中的值
             if 'd' in str(out_draw):  # 模切 先从预设牌河摸到该牌
-                data[player]['预设牌河'].remove(out_draw)  # 取出
-                out_draw = extract_number(out_draw)  # 确定模切该牌
-                feel_draw = out_draw
+                if 'dr' in out_draw: 
+                    data[player]['预设牌河'].remove(out_draw)  # 取出
+                    # feel_draw = extract_number(out_draw)  # 确定模切该牌
+                    feel_draw = out_draw
+                else:
+                    data[player]['预设牌河'].remove(out_draw)  # 取出
+                    out_draw = extract_number(out_draw)  # 确定模切该牌
+                    feel_draw = out_draw
             else:
                 # 手切，从手牌里选择对应的牌打出
                 Cut_hand = True
@@ -268,7 +274,7 @@ def party(player):
                     feel_draw = random.choice(data[player]['预设手牌'])
                     data[player]['预设手牌'].remove(feel_draw)  # 取出
                 # 再从预设牌河摸牌
-                elif is_r(data[player]['预设牌河对照']):  # 立直前,先从预设手牌摸牌,其次牌山摸牌
+                elif is_r(data[player]['预设牌河对照']) and not data[player]['预设手牌对照']:  # 立直前,先从预设手牌摸牌,其次牌山摸牌
                     feel_draw = get_draw()
                 elif [_ for _ in data[player]['预设牌河'] if 'd' not in str(_)]:  # 检查预设牌河是否还有非模切牌
                     # 避免摸到d模切牌
@@ -313,8 +319,10 @@ def party(player):
             else:
                 out_draw = random.choice(data[player]['手牌'])
     
-    # 记录出牌         
-    if feel_draw == out_draw and not Cut_hand:
+    # 记录出牌 
+    if 'dr' in str(out_draw) :
+        data[player]['出牌'].append('r60')
+    elif feel_draw == out_draw and not Cut_hand:
         data[player]['出牌'].append(60)
     else:
         data[player]['出牌'].append(out_draw)
@@ -324,9 +332,10 @@ def party(player):
     # print(data[player]['手牌'])
     # 打出的牌从手牌删除
     try:
-        ...
+        
         data[player]['手牌'].remove(out_draw)  # 删除选中的值
     except:
+        # data[player]['手牌'].remove(extract_number(out_draw))
         pdb.set_trace()
         
     
@@ -377,6 +386,8 @@ def mahjong_to_number(mahjong_string):
         number = int(mahjong_string[0])
     elif len(mahjong_string) == 3 :  # r1p,d1p
         number = int(mahjong_string[1])
+    elif len(mahjong_string) == 4 :  # dr1p
+        number = int(mahjong_string[2])
     suit = suit_mapping[mahjong_string[-1]]
     if number == 0:
         if suit == 10 : return 51
@@ -386,6 +397,8 @@ def mahjong_to_number(mahjong_string):
         return number + suit  # 返回int 21
     elif len(mahjong_string) == 3: 
         return mahjong_string[0] + str(number + suit)  # 返回str r21 d21
+    elif len(mahjong_string) == 4: 
+        return mahjong_string[0:2] + str(number + suit)  # 返回str dr21
         
 
 # 解析手牌、牌河代码，输入“123m”, 返回['11','12','13']
@@ -472,7 +485,11 @@ def extract_number(input_string):
     # 使用isdigit检查字符串是否由数字组成
     if isinstance(input_string, (int, float)):
         return input_string
-    if 'r' in input_string or 'd' in input_string:  # '立直r的判断' 模切的判断
+    if 'r' in input_string and 'd' in input_string:  # '模切立直r的判断
+        input_string = input_string[1:]
+        number_part = ''.join(char for char in input_string if char.isdigit())  # 将提取到的数字部分转换为整数
+        return int(number_part)
+    elif 'r' in input_string or 'd' in input_string:  # '立直r的判断' 模切的判断
         number_part = ''.join(char for char in input_string if char.isdigit())  # 将提取到的数字部分转换为整数
         return int(number_part)
     else:
@@ -495,14 +512,17 @@ def licensing():
     for player in data.keys():
         # 从牌山取出预设手牌
         for p in data[player]['预设手牌']:
+            # print(p)
             cards.remove(extract_number(p))
         # 从牌山取出预设牌河
         for p in data[player]['预设牌河']:
+            # print(p)
             cards.remove(extract_number(p))
         # 从牌山中取出需要副露的牌
         for paizu in data[player]['副露']:
             for pai in Remove_secondary_exposure(paizu):
                 # print(data[player]['副露'])
+                # print(pai)
                 cards.remove(pai)
     for player in data.keys():
         # 先将需要副露的牌置入配牌
@@ -510,13 +530,15 @@ def licensing():
             for pai in Remove_secondary_exposure(paizu):
                 data[player]['配牌'].append(pai)
         if is_r(data[player]['预设牌河对照']):  # 判断预设牌河里是否有立直
-            print(1)
+            # print(1)
             # 计数巡目，从预设牌河中取 立直巡目 枚,加入配牌
             # 不包含模切牌的预设牌河
+            # print(data[player]['预设牌河'])
             p_list = [_ for _ in data[player]['预设牌河'] if  'd' not in str(_)]
             # print(p_list)
-            for index  in range( is_r(data[player]['预设牌河对照'])[0]):
-                print(2)
+            # print(p_list)
+            for index  in range( is_r(data[player]['预设牌河对照'])[0]+1):
+                # print(2)
                 if index > len(p_list) -1 :
                     break
                 p =  p_list[index]
@@ -525,13 +547,14 @@ def licensing():
                 # print( data[player]['预设牌河'])
                 data[player]['预设牌河'].remove(p)  # 取出
             # 计数巡目，从预设手牌中取  13 - 立直巡目 - 副露占用枚,置入配牌
-            for _ in range(13 - is_r(data[player]['预设牌河对照'])[0] - len(data[player]['配牌'])):
-                print(3)
+            for _ in range(13 - len(data[player]['配牌'])):
+                # print(3)
                 if not data[player]['预设手牌']:
                     break
                 p =  random.choice(data[player]['预设手牌'])
                 data[player]['配牌'].append(p)
                 data[player]['预设手牌'].remove(p)  # 取出
+            # print(data[player]['预设牌河对照'])
         elif True:
             # 计数巡目，从预设手牌中取  13 - 巡目（预设牌河）-副露占用 枚,置入配牌
             for _ in range(13 - len(data[player]['预设牌河']) - len(data[player]['配牌'])):
