@@ -335,8 +335,8 @@ def party(player):
         
         data[player]['手牌'].remove(out_draw)  # 删除选中的值
     except:
-        # data[player]['手牌'].remove(extract_number(out_draw))
-        pdb.set_trace()
+        data[player]['手牌'].remove(extract_number(out_draw))
+        # pdb.set_trace()
         
     
     # 检查出牌是否为其他家副露，返回副露家选手/None
