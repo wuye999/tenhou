@@ -22,13 +22,13 @@ assign = {
         '点数': 24000, 
         '手牌': "78m32547799s7m", 
         '副露': "", 
-        '牌河': "3z1m8s1sd3z6zd4m1z"
+        '牌河': "3z1m7s1sd3z6zd4m1z"
         },  
     "南家": {
         '点数': 25000, 
         '手牌': "", 
-        '副露': "碰888s 加8888s", 
-        '牌河': "3z1s5z7sd1p4s8p6p"
+        '副露': "888暗8s", 
+        '牌河': "3z1s5z7sdr1p4s8p6p"
         },
     "西家": {
         '点数': 25000, 
@@ -216,6 +216,9 @@ def party(player):
         for pai in Remove_secondary_exposure(paizu):  # 清理暗杠后的手牌
             data[player]['手牌'].remove(pai)
         data[player]['副露'].remove(paizu)
+        # print(data[player]['预设牌河对照'])
+        # print(data[player]['预设牌河'])
+        # feel_draw = get_draw()
         return party(player)  # 重新摸牌
     elif paizu and 'k' in paizu:  # 加杠
         # 加杠的牌被开局置入手牌里
@@ -258,6 +261,7 @@ def party(player):
             out_draw = data[player]['预设牌河对照'][0]
             data[player]['预设牌河对照'].remove(out_draw)  # 删除选中的值
             if 'd' in str(out_draw):  # 模切 先从预设牌河摸到该牌
+                # print(out_draw)
                 if 'dr' in out_draw: 
                     data[player]['预设牌河'].remove(out_draw)  # 取出
                     # feel_draw = extract_number(out_draw)  # 确定模切该牌
@@ -335,8 +339,8 @@ def party(player):
         
         data[player]['手牌'].remove(out_draw)  # 删除选中的值
     except:
-        data[player]['手牌'].remove(extract_number(out_draw))
-        # pdb.set_trace()
+        # data[player]['手牌'].remove(extract_number(out_draw))
+        pdb.set_trace()
         
     
     # 检查出牌是否为其他家副露，返回副露家选手/None
@@ -537,7 +541,11 @@ def licensing():
             p_list = [_ for _ in data[player]['预设牌河'] if  'd' not in str(_)]
             # print(p_list)
             # print(p_list)
-            for index  in range( is_r(data[player]['预设牌河对照'])[0]+1):
+            if data[player]['预设手牌对照']:
+                number = is_r(data[player]['预设牌河对照'])[0]+1
+            else:
+                number = is_r(data[player]['预设牌河对照'])[0]
+            for index  in range( number):
                 # print(2)
                 if index > len(p_list) -1 :
                     break
