@@ -3,11 +3,11 @@
 
  也可以对牌谱中的手牌、牌河、点数状况等信息进行自定义编辑, 方便跑ai。
  
-  打包好的应用程序：https://ghproxy.com/https://raw.githubusercontent.com/wuye999/tenhou/main/%E5%A4%A9%E5%87%A4%E7%89%8C%E8%B0%B1%E7%94%9F%E6%88%90.zip
+  打包好的应用程序：https://raw.githubusercontent.com/wuye999/tenhou/main/天凤牌谱生成.zip
 
   对应用程序有疑问，请直接使用源代码
   
-  源代码：[raw.githubusercontent.com/wuye999/tenhou/main/生成2.py](https://raw.githubusercontent.com/wuye999/tenhou/main/%E7%94%9F%E6%88%902.py)
+  源代码：https://raw.githubusercontent.com/wuye999/tenhou/main/生成2.py
   
 1. 下载压缩包或者源代码解压得到两个文件
 
