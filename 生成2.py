@@ -20,15 +20,15 @@ assign = {
     '里朵拉指示牌': "",
     "东家": {
         '点数': 24000, 
-        '手牌': "78m32547799s7m", 
+        '手牌': "78m23457788899s", 
         '副露': "", 
-        '牌河': "3z1m7s1sd3z6zd4m1z"
+        '牌河': "3z1m7sdr1sd3z6zd4m1z"
         },  
     "南家": {
         '点数': 25000, 
         '手牌': "", 
-        '副露': "888暗8s", 
-        '牌河': "3z1s5z7sdr1p4s8p6p"
+        '副露': "", 
+        '牌河': "3z1sr5z7s1p4s8p6p"
         },
     "西家": {
         '点数': 25000, 
@@ -209,7 +209,20 @@ def party(player):
     Cut_hand = None
     
     if paizu and 'a' in paizu:  # 暗杠
-        feel_draw = get_draw() 
+                # 先从预设手牌摸牌
+        if data[player]['预设手牌']:
+            feel_draw = random.choice(data[player]['预设手牌'])
+            data[player]['预设手牌'].remove(feel_draw)  # 取出
+        # 再从预设牌河摸牌
+        elif is_r(data[player]['预设牌河对照']):  # 立直前,先从预设手牌摸牌,其次牌山摸牌
+            feel_draw = get_draw()
+        elif [_ for _ in data[player]['预设牌河'] if 'd' not in str(_)]:  # 检查预设牌河是否还有非模切牌
+            # 避免摸到d模切牌
+            feel_draw = [_ for _ in data[player]['预设牌河'] if 'd' not in str(_)][0]
+            data[player]['预设牌河'].remove(feel_draw)  # 取出
+        else:
+            # 已无预设,从牌山摸牌
+            feel_draw = get_draw()
         data[player]['取牌'].append(feel_draw)  # 先摸牌
         data[player]['手牌'].append(feel_draw)
         data[player]['出牌'].append(paizu)  # 暗杠
@@ -222,7 +235,20 @@ def party(player):
         return party(player)  # 重新摸牌
     elif paizu and 'k' in paizu:  # 加杠
         # 加杠的牌被开局置入手牌里
-        feel_draw = get_draw() 
+                # 先从预设手牌摸牌
+        if data[player]['预设手牌']:
+            feel_draw = random.choice(data[player]['预设手牌'])
+            data[player]['预设手牌'].remove(feel_draw)  # 取出
+        # 再从预设牌河摸牌
+        elif is_r(data[player]['预设牌河对照']):  # 立直前,先从预设手牌摸牌,其次牌山摸牌
+            feel_draw = get_draw()
+        elif [_ for _ in data[player]['预设牌河'] if 'd' not in str(_)]:  # 检查预设牌河是否还有非模切牌
+            # 避免摸到d模切牌
+            feel_draw = [_ for _ in data[player]['预设牌河'] if 'd' not in str(_)][0]
+            data[player]['预设牌河'].remove(feel_draw)  # 取出
+        else:
+            # 已无预设,从牌山摸牌
+            feel_draw = get_draw()
         data[player]['取牌'].append(feel_draw)  # 先摸牌
         data[player]['手牌'].append(feel_draw)
         data[player]['出牌'].append(paizu)  # 加杠
@@ -249,7 +275,12 @@ def party(player):
             data[player]['预设牌河对照'].remove(out_draw)  # 删除选中的值
             # print(data[player]['预设手牌'])
             # print(data[player]['手牌'])
-            data[player]['预设牌河'].remove(out_draw)  # 取出
+            # pdb.set_trace()
+            # if out_draw in data[player]['预设牌河']:
+            try:
+                data[player]['预设牌河'].remove(out_draw)  # 取出
+            except:
+                pdb.set_trace()
             out_draw = extract_number(out_draw)  # 确定模切该牌
             feel_draw = out_draw
         else:  # 预设牌河对照已打完，从牌山摸牌
@@ -278,7 +309,7 @@ def party(player):
                     feel_draw = random.choice(data[player]['预设手牌'])
                     data[player]['预设手牌'].remove(feel_draw)  # 取出
                 # 再从预设牌河摸牌
-                elif is_r(data[player]['预设牌河对照']) and not data[player]['预设手牌对照']:  # 立直前,先从预设手牌摸牌,其次牌山摸牌
+                elif is_r(data[player]['预设牌河对照']):  # 立直前,先从预设手牌摸牌,其次牌山摸牌
                     feel_draw = get_draw()
                 elif [_ for _ in data[player]['预设牌河'] if 'd' not in str(_)]:  # 检查预设牌河是否还有非模切牌
                     # 避免摸到d模切牌
@@ -541,10 +572,11 @@ def licensing():
             p_list = [_ for _ in data[player]['预设牌河'] if  'd' not in str(_)]
             # print(p_list)
             # print(p_list)
-            if data[player]['预设手牌对照']:
-                number = is_r(data[player]['预设牌河对照'])[0]+1
-            else:
-                number = is_r(data[player]['预设牌河对照'])[0]
+            # if data[player]['预设手牌对照']:
+            #     number = is_r(data[player]['预设牌河对照'])[0]+1
+            # else:
+            #     number = is_r(data[player]['预设牌河对照'])[0]
+            number = is_r(data[player]['预设牌河对照'])[0]
             for index  in range( number):
                 # print(2)
                 if index > len(p_list) -1 :
@@ -554,6 +586,7 @@ def licensing():
                 # print(p)
                 # print( data[player]['预设牌河'])
                 data[player]['预设牌河'].remove(p)  # 取出
+            print(data[player]['配牌'])
             # 计数巡目，从预设手牌中取  13 - 立直巡目 - 副露占用枚,置入配牌
             for _ in range(13 - len(data[player]['配牌'])):
                 # print(3)
@@ -562,7 +595,7 @@ def licensing():
                 p =  random.choice(data[player]['预设手牌'])
                 data[player]['配牌'].append(p)
                 data[player]['预设手牌'].remove(p)  # 取出
-            # print(data[player]['预设牌河对照'])
+            print(data[player]['配牌'])
         elif True:
             # 计数巡目，从预设手牌中取  13 - 巡目（预设牌河）-副露占用 枚,置入配牌
             for _ in range(13 - len(data[player]['预设牌河']) - len(data[player]['配牌'])):
