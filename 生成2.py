@@ -20,9 +20,9 @@ assign = {
     '里朵拉指示牌': "",
     "东家": {
         '点数': 24000, 
-        '手牌': "78m23457788899s", 
-        '副露': "", 
-        '牌河': "3z1m7sdr1sd3z6zd4m1z"
+        '手牌': "78m23447799s", 
+        '副露': "碰505s", 
+        '牌河': "3z1m7s1s3z6zd4m1z"
         },  
     "南家": {
         '点数': 25000, 
@@ -34,13 +34,13 @@ assign = {
         '点数': 25000, 
         '手牌': "", 
         '副露': "", 
-        '牌河': "4zd1s9m7z1z1pd2m8p"
+        '牌河': "4zd1s7z1z1pd2m8p"
         },
     "北家": {
         '点数': 25000, 
         '手牌': "", 
         '副露': "", 
-        '牌河': "d1p2m7z3z2zd6zd5pd2zr5p"
+        '牌河': "d1p2m1s5s2zd6zd5pd2zr5p"
         },
 }
 
@@ -189,7 +189,9 @@ def Remove_secondary_exposure(paizu) -> list:
     result_string = re.sub(r'[a-zA-Z]\d{2}', '', paizu)
     result_list = [int(result_string[i:i+2]) for i in range(0, len(result_string), 2)]
     if 'a' in paizu:  # 暗杠返回4枚
-        return [ result_list[0] for _ in range(4)]
+        eaten = int (re.findall(r'[a-zA-Z](\d{2})', paizu)[0])  # 被副露的牌
+        result_list.append(eaten)
+        return result_list
     elif 'k' in paizu:  # 加杠返回1枚
         return [result_list[0]]
     else:
@@ -301,6 +303,7 @@ def party(player):
                     data[player]['预设牌河'].remove(out_draw)  # 取出
                     out_draw = extract_number(out_draw)  # 确定模切该牌
                     feel_draw = out_draw
+                    # print(out_draw)
             else:
                 # 手切，从手牌里选择对应的牌打出
                 Cut_hand = True
@@ -342,8 +345,11 @@ def party(player):
     # 副露后或预设打完后的出牌选择
     if not out_draw: 
         if data[player]['预设牌河对照']:
+            # print(1)
             out_draw = data[player]['预设牌河对照'][0]
             data[player]['预设牌河对照'].remove(out_draw)  # 删除选中的值
+            # if 'd' in str(out_draw):
+            #     out_draw = extract_number(out_draw)
         # 其次再从 手牌 - 预设手牌对照 里选择
         elif list(set(data[player]['手牌']) - set(data[player]['预设手牌对照'])):
             out_draw =  random.choice(list(set(data[player]['手牌']) - set(data[player]['预设手牌对照'])))
@@ -475,8 +481,32 @@ def string_to_mahjong_Secondary_list(mahjong_string):
                 ...
             else:
                 paizu_new += d[char]
+        # 调整碰杠中赤朵拉的位置
+        if 'p' in paizu_new or 'm' in paizu_new or 'a' in  paizu_new or 'k' in paizu_new:
+            if 'a' in paizu_new :
+                if '51' in paizu_new: paizu_new= '151515a51'
+                elif '52' in paizu_new: paizu_new= '252525a52'
+                elif '53' in paizu_new: paizu_new= '353535a53'
+            if 'k' in  paizu_new :
+                ...
+                # 待续
+            else:
+                paizu_new = extract_substrings(paizu_new)
         result.append(paizu_new)        
     return result
+
+
+# 调整碰杠中赤朵拉的位置
+def extract_substrings(s):
+    pattern = re.compile(r'([a-zA-Z]?\d{2})')
+    result_list = pattern.findall(s)  # 获取列表
+    index_n = [index for index, elem in enumerate(result_list) if any(char.isalpha() for char in elem)][0]  # 获取带字母元素索引
+    index_p = copy.deepcopy(result_list[index_n])
+    result_list.remove(result_list[index_n])  # 删除带字母元素
+    result_new = [elem for elem in result_list if elem[0] != '5'] + [elem for elem in result_list if elem[0] == '5']  # 排序，将515253置入列表底部
+    result_new.insert(index_n, index_p)
+    substrings = ''.join(result_new)
+    return substrings
 
 
 # 创建data
@@ -586,7 +616,7 @@ def licensing():
                 # print(p)
                 # print( data[player]['预设牌河'])
                 data[player]['预设牌河'].remove(p)  # 取出
-            print(data[player]['配牌'])
+            # print(data[player]['配牌'])
             # 计数巡目，从预设手牌中取  13 - 立直巡目 - 副露占用枚,置入配牌
             for _ in range(13 - len(data[player]['配牌'])):
                 # print(3)
@@ -595,7 +625,7 @@ def licensing():
                 p =  random.choice(data[player]['预设手牌'])
                 data[player]['配牌'].append(p)
                 data[player]['预设手牌'].remove(p)  # 取出
-            print(data[player]['配牌'])
+            # print(data[player]['配牌'])
         elif True:
             # 计数巡目，从预设手牌中取  13 - 巡目（预设牌河）-副露占用 枚,置入配牌
             for _ in range(13 - len(data[player]['预设牌河']) - len(data[player]['配牌'])):
