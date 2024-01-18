@@ -391,8 +391,8 @@ def party(player):
         player = Flag2
     else:
         player = cycle_values(player)  
-    # 剩余14张牌结束, 朵拉和里朵拉指示牌已用掉2枚
-    if len(cards) <= 12:
+    # 剩余14张牌结束, 朵拉和里朵拉指示牌已占用
+    if len(cards) + len(assign["朵拉指示牌"]) + len(assign["里朵拉指示牌"]) <= 14:
         return
     return party(player)
     
@@ -706,11 +706,12 @@ if __name__ == "__main__":
         Tenhou_log['log'][0].append([extract_number(c) for c in data[player]['配牌']])
         Tenhou_log['log'][0].append([extract_number(c) for c in data[player]['取牌']])
         Tenhou_log['log'][0].append(data[player]['出牌'])
-    Tenhou_log['log'][0].append(["和了",[-1300,3700,-700,-700],[1,1,1,"20符3飜700-1300点","門前清自摸和(1飜)","平和(1飜)","立直(1飜)","裏ドラ(0飜)"]])
+    Tenhou_log['log'][0].append(["全員聴牌"])
     with open("tenhou_log.txt", "w", encoding='utf-8') as file:
-        file.write("https://tenhou.net/5/#json=" + json.dumps(Tenhou_log,ensure_ascii=False) )
+        file.write("https://tenhou.net/6/#json=" + json.dumps(Tenhou_log,ensure_ascii=False) )
     
     print("生成牌谱成功。")
     input('按回车关闭')
+    
 
 
