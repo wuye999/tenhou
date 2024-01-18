@@ -5,7 +5,7 @@
  
   打包好的应用程序：https://raw.githubusercontent.com/wuye999/tenhou/main/天凤牌谱生成.zip
 
-  对应用程序有疑问，请直接使用源代码
+  如对应用程序有疑问，请查看或使用源代码
   
   源代码：https://raw.githubusercontent.com/wuye999/tenhou/main/生成2.py
   
