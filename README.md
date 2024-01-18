@@ -1,11 +1,20 @@
 # 根据可见手牌和牌河生成天凤牌谱
  一个简单的脚本，功能是根据可见手牌和牌河生成天凤牌谱，
 
- 也可以对牌谱中的手牌、牌河、点数状况等信息进行自定义编辑, 方便跑ai。用法如下
+ 也可以对牌谱中的手牌、牌河、点数状况等信息进行自定义编辑, 方便跑ai。
+ 
+  打包好的应用程序：https://ghproxy.com/https://raw.githubusercontent.com/wuye999/tenhou/main/%E5%A4%A9%E5%87%A4%E7%89%8C%E8%B0%B1%E7%94%9F%E6%88%90.zip
 
-  脚本链接：[raw.githubusercontent.com/wuye999/tenhou/main/生成2.py](https://raw.githubusercontent.com/wuye999/tenhou/main/%E7%94%9F%E6%88%902.py)
+  对应用程序有疑问，请直接使用源代码
+  
+  源代码：[raw.githubusercontent.com/wuye999/tenhou/main/生成2.py](https://raw.githubusercontent.com/wuye999/tenhou/main/%E7%94%9F%E6%88%902.py)
+  
+1. 下载压缩包或者源代码解压得到两个文件
 
-1. 首先，
+   ![image](https://github.com/wuye999/tenhou/assets/79479594/a4e83411-594a-4d19-b8cd-cb60467e5623)
+
+
+3. 首先，
 
     我们拿到这样一个局面，我们不知道牌谱，又或者想改牌河、手牌。
    
@@ -14,23 +23,26 @@
     ![image](https://github.com/wuye999/tenhou/assets/79479594/d414be09-0f5b-4b59-9e5b-ed350c1e6f7f)
 
 
-2. 我们在脚本里填写信息
+4. 我们用记事本打开** 配置.json **, 填写信息
 
-    使用此脚本 第14到40行 需要输入 **主视角手牌** 和 **四家牌河信息**、**副露信息** 其余留空
+   需要输入 **主视角手牌** 和 **四家牌河信息**、**四家副露信息** 其余留空
 
-    ![image](https://github.com/wuye999/tenhou/assets/79479594/574e8768-6575-4fce-8bf6-614a3b32bb6a)
+    ![image](https://github.com/wuye999/tenhou/assets/79479594/dff2e149-7ec2-487b-98c3-0c27ea1d3f3e)
 
-    然后执行脚本(python 脚本.py)，会自动生成完整的取牌，出牌部分。
 
-    在脚本目录生成一个txt文件，里面是对应的是生成的天凤牌谱链接
+    然后双击执行exe程序，会自动生成完整的取牌，出牌部分。
 
-    ![image](https://github.com/wuye999/tenhou/assets/79479594/b17103e0-9186-4272-b161-898f562749ee)
+    在软件目录生成一个txt文件，里面是对应的是生成的天凤牌谱链接
 
-3. 结果
+    ![image](https://github.com/wuye999/tenhou/assets/79479594/93304ec1-aa56-4ef9-8c54-5dd5cea5fc01)
 
-    ![image](https://github.com/wuye999/tenhou/assets/79479594/d92ea9ae-d9f6-4932-9459-af4927ee2d8d)
 
-4. 问题
+5. 结果
+
+    ![image](https://github.com/wuye999/tenhou/assets/79479594/b1d2b759-aa92-458f-8e49-4c01c485c874)
+
+
+6. 问题
 
     不能出现4枚以上一样的牌，不能出现2枚相同的赤宝牌。否则会报错
    
