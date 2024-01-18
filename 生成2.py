@@ -12,37 +12,6 @@
 ## 杠。    杠上家8s:"杠8888s"  杠对家8s:"8杠888s"   杠下家8s:"888杠8s"
 ## 暗杠。  暗杠8s:"888暗8m"
 ## 加杠。  碰上家8s,之后加杠8s:"碰888s 加8888s"   碰对家8s,之后加杠8s:"8碰88s 8加888s"   碰下家8s,之后加杠8s:"88碰8s 88加88s"
-assign = {
-    '场局次': '东1局',
-    '本场数': 0,
-    '场供': 1,
-    '朵拉指示牌': "8p",
-    '里朵拉指示牌': "",
-    "东家": {
-        '点数': 24000, 
-        '手牌': "78m23447799s", 
-        '副露': "碰505s", 
-        '牌河': "3z1m7s1s3z6zd4m1z"
-        },  
-    "南家": {
-        '点数': 25000, 
-        '手牌': "", 
-        '副露': "", 
-        '牌河': "3z1sr5z7s1p4s8p6p"
-        },
-    "西家": {
-        '点数': 25000, 
-        '手牌': "", 
-        '副露': "", 
-        '牌河': "4zd1s7z1z1pd2m8p"
-        },
-    "北家": {
-        '点数': 25000, 
-        '手牌': "", 
-        '副露': "", 
-        '牌河': "d1p2m1s5s2zd6zd5pd2zr5p"
-        },
-}
 
 
 ######################################
@@ -50,10 +19,39 @@ assign = {
 ######################################
 
 
-import json,random,os,re
+import json,random,os,re,sys
 import copy
 import pdb
 
+
+# 在pyinstaller打包环境下返回资源地址
+def resource_path(relative_path):
+    executable_path = sys.argv[0] 
+    current_path = os.path.dirname(os.path.abspath(executable_path)) # 读取当前路径下的文件 file_path = os.path.join(current_path, "example.txt")
+    return os.path.join(current_path, relative_path)
+
+
+# 读取数据 返回 str
+def readData(key: str) -> dict:
+    path = resource_path(f"{key}.json")
+    try:
+        if not os.path.exists(path):
+            print(f'数据文件不存在')
+            with open(path, 'w',encoding='utf-8') as f:
+                ...
+            return {}
+        with open(path, 'r',encoding='utf-8') as f:
+            value = f.read()
+        if value:
+            return json.loads(value)
+        else:
+            print(f'数据为空')
+            return {}
+    except Exception as e:
+        print(f'读取数据失败\n{e}')
+        return {}
+    
+    
 # 生成1副牌
 def get_cards():
     cards = []
@@ -150,7 +148,7 @@ def Inspection_dew(player):
             
 # 检查被副露 返回被副露的选手
 def byexposed(player):
-    out_draw = data[player]['出牌'][-1]  # 自家出的牌
+    out_draw = data[player]['最后出牌']  # 自家出的牌
     for paizu in data[cycle_values(player)]['副露']:
         # print(data[cycle_values(player)]['副露'])
         eaten = int (re.findall(r'[a-zA-Z](\d{2})', paizu)[0])  # 被副露的牌
@@ -167,7 +165,10 @@ def byexposed(player):
     
     for paizu in data[cycle_values(cycle_values(player))]['副露']:
         eaten = int (re.findall(r'[a-zA-Z](\d{2})', paizu)[0])  # 被副露的牌
-        # 检查对家是否要碰
+        # # 检查对家是否要碰
+        # print( out_draw)
+        # print( eaten)
+        # print(paizu)
         if 'p' in paizu and out_draw == eaten and paizu[2] == 'p':
             return cycle_values(cycle_values(player))  # 匹配成功，该牌被对家碰
         # 检查对家是否要杠
@@ -338,6 +339,7 @@ def party(player):
         
     # 记录取牌    
     data[player]['取牌'].append(feel_draw)
+    # print(paizu)
     # 副露不摸牌，不放入手牌
     if not paizu: data[player]['手牌'].append(feel_draw)  # 摸到的牌加入手牌
     
@@ -367,7 +369,7 @@ def party(player):
         data[player]['出牌'].append(60)
     else:
         data[player]['出牌'].append(out_draw)
-    data[player]['最后出牌'] = out_draw
+    data[player]['最后出牌'] = extract_number(out_draw)
     # pdb.set_trace()
     # print(out_draw)
     # print(data[player]['手牌'])
@@ -492,7 +494,7 @@ def string_to_mahjong_Secondary_list(mahjong_string):
                 # 待续
             else:
                 paizu_new = extract_substrings(paizu_new)
-        result.append(paizu_new)        
+        result.append(paizu_new)      
     return result
 
 
@@ -660,6 +662,9 @@ def licensing():
 
         
 if __name__ == "__main__":
+    # 读取配置
+    assign =  readData('配置')
+    
     # 生成1副牌
     cards = get_cards()
     # 创建data
@@ -705,6 +710,6 @@ if __name__ == "__main__":
         file.write("https://tenhou.net/5/#json=" + json.dumps(Tenhou_log,ensure_ascii=False) )
     
     print("生成牌谱成功。")
-
+    input('按回车关闭')
 
 
