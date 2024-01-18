@@ -264,6 +264,7 @@ def party(player):
         for pai in Remove_secondary_exposure(paizu):  # 清理明杠后的手牌
             data[player]['手牌'].remove(pai)
         data[player]['副露'].remove(paizu)
+        data[player]['出牌'].append(0)
         return party(player)  # 重新摸牌
     elif paizu:  # 吃、碰。 副露不摸牌，从手牌中去掉副露的牌
         for pai in Remove_secondary_exposure(paizu):
