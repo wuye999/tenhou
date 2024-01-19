@@ -201,6 +201,8 @@ def Remove_secondary_exposure(paizu) -> list:
     
 # 开始牌局
 def party(player):
+    if len(cards) + len(Tenhou_log['log'][0][2]) + len(Tenhou_log['log'][0][3]) <= 14 :
+        return
     # pdb.set_trace()
     # 摸牌
     # 每次摸牌都从预设手牌里摸，预设手牌为空，则从预设牌河摸牌，最后从牌山摸牌
@@ -392,8 +394,7 @@ def party(player):
     else:
         player = cycle_values(player)  
     # 剩余14张牌结束, 朵拉和里朵拉指示牌已占用
-    if len(cards) + len(assign["朵拉指示牌"]) + len(assign["里朵拉指示牌"]) <= 14:
-        return
+
     return party(player)
     
 
