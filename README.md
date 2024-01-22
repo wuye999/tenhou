@@ -1,20 +1,15 @@
 # 根据可见手牌和牌河生成天凤牌谱
- 一个简单的脚本，功能是根据可见手牌和牌河生成天凤牌谱，
-
- 也可以对牌谱中的手牌、牌河、点数状况等信息进行自定义编辑, 方便跑ai。
- 
-  打包好的应用程序：https://raw.githubusercontent.com/wuye999/tenhou/main/天凤牌谱生成.zip
-
+  一个简单的脚本，功能是根据可见手牌和牌河生成天凤牌谱，
+  也可以对牌谱中的手牌、牌河、点数状况等信息进行自定义编辑, 方便跑ai。
+  打包好的应用程序：https://raw.githubusercontent.com/wuye999/tenhou/main/天凤牌谱生成.zi
   如对应用程序有疑问，请查看或使用源代码
-  
   源代码：https://raw.githubusercontent.com/wuye999/tenhou/main/生成2.py
   
 1. 下载压缩包或者源代码解压得到两个文件
-
    ![image](https://github.com/wuye999/tenhou/assets/79479594/a4e83411-594a-4d19-b8cd-cb60467e5623)
 
 
-3. 首先，
+2. 首先，
 
     我们拿到这样一个局面，我们不知道牌谱，又或者想改牌河、手牌。
    
