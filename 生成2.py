@@ -1,24 +1,3 @@
-######################################
-# 根据可见手牌和牌河生成天凤牌谱。或者对牌谱中的手牌、牌河、点数状况等信息进行自定义编辑，并生成天凤牌谱链接
-# 多个副露请用空格隔开，如"55碰5z 吃340s"
-# 指定副露时，相关牌河里一定要有打出被副露的牌。例如指定碰对家8s，对家牌河需要存在8s才能被碰。
-# 不能出现4枚以上一样的牌，不能出现2枚相同的赤宝牌，不能设置吃或碰后模切，否则会报错
-
-# 牌河手模切写法：手切标志无，模切标志"d"。  手切8s:"8s"   模切8s:"d8s"
-# 立直写法：立直标志"r"，立直后无需模切标志，统统模切。   打8s立直:"r8s"    模切8s立直"dr8s"
-# 副露写法
-## 吃。    13m吃2m:"吃213m"。
-## 碰。    碰上家8s:"碰888s"   碰对家8s:"8碰88s"    碰下家8s:"88碰8s"
-## 杠。    杠上家8s:"杠8888s"  杠对家8s:"8杠888s"   杠下家8s:"888杠8s"
-## 暗杠。  暗杠8s:"888暗8m"
-## 加杠。  碰上家8s,之后加杠8s:"碰888s 加8888s"   碰对家8s,之后加杠8s:"8碰88s 8加888s"   碰下家8s,之后加杠8s:"88碰8s 88加88s"
-
-
-######################################
-######################################
-######################################
-
-
 import json,random,os,re,sys
 import copy
 import pdb
@@ -27,7 +6,7 @@ import pdb
 # 在pyinstaller打包环境下返回资源地址
 def resource_path(relative_path):
     executable_path = sys.argv[0] 
-    current_path = os.path.dirname(os.path.abspath(executable_path)) # 读取当前路径下的文件 file_path = os.path.join(current_path, "example.txt")
+    current_path = os.path.dirname(os.path.abspath(executable_path)) # 读取当前路径下的文件
     return os.path.join(current_path, relative_path)
 
 
@@ -312,19 +291,31 @@ def party(player):
                 # 手切，从手牌里选择对应的牌打出
                 Cut_hand = True
                 # 先从预设手牌摸牌
-                if data[player]['预设手牌']:
+                if is_r(data[player]['预设牌河对照']) and data[player]['预设手牌']:  # 立直前,先从预设手牌摸牌,其次牌山摸牌
                     feel_draw = random.choice(data[player]['预设手牌'])
                     data[player]['预设手牌'].remove(feel_draw)  # 取出
+                elif len(data[player]['预设手牌']) >2:
+                    feel_draw = random.choice(data[player]['预设手牌'])
+                    data[player]['预设手牌'].remove(feel_draw)  # 取出
+                elif len(data[player]['预设手牌']) <= 2 and data[player]['预设手牌']:
+                    if [_ for _ in data[player]['预设牌河'] if 'd' not in str(_)]:
+                        feel_draw = [_ for _ in data[player]['预设牌河'] if 'd' not in str(_)][0]
+                        data[player]['预设牌河'].remove(feel_draw)  # 取出
+                    else:
+                        feel_draw = random.choice(data[player]['预设手牌'])
+                        data[player]['预设手牌'].remove(feel_draw)  # 取出
                 # 再从预设牌河摸牌
-                elif is_r(data[player]['预设牌河对照']):  # 立直前,先从预设手牌摸牌,其次牌山摸牌
-                    feel_draw = get_draw()
                 elif [_ for _ in data[player]['预设牌河'] if 'd' not in str(_)]:  # 检查预设牌河是否还有非模切牌
                     # 避免摸到d模切牌
                     feel_draw = [_ for _ in data[player]['预设牌河'] if 'd' not in str(_)][0]
                     data[player]['预设牌河'].remove(feel_draw)  # 取出
                 else:
                     # 已无预设,从牌山摸牌
+                    if player == 'Dさん': 
+                        print(out_draw )   
+                        pdb.set_trace()
                     feel_draw = get_draw()
+                    # print(player + '1')
                 out_draw = out_draw  # 确定手切的牌
         else:  # 预设牌河对照已打完，从牌山摸牌
             # 先从预设手牌摸牌
@@ -339,7 +330,8 @@ def party(player):
             else:
                 # 已无预设,从牌山摸牌
                 feel_draw = get_draw()
-        
+                # print(player + '2')
+     
     # 记录取牌    
     data[player]['取牌'].append(feel_draw)
     # print(paizu)
@@ -611,6 +603,8 @@ def licensing():
             # else:
             #     number = is_r(data[player]['预设牌河对照'])[0]
             number = is_r(data[player]['预设牌河对照'])[0]
+            if number > 13:
+                number = 13
             for index  in range( number):
                 # print(2)
                 if index > len(p_list) -1 :
@@ -632,7 +626,8 @@ def licensing():
             # print(data[player]['配牌'])
         elif True:
             # 计数巡目，从预设手牌中取  13 - 巡目（预设牌河）-副露占用 枚,置入配牌
-            for _ in range(13 - len(data[player]['预设牌河']) - len(data[player]['配牌'])):
+            numxunmu = len(data[player]['预设牌河']) if len(data[player]['预设牌河'])<=13 else 13
+            for _ in range(13 - numxunmu - len(data[player]['配牌'])):
                 if not data[player]['预设手牌']:
                     break
                 p =  random.choice(data[player]['预设手牌'])
