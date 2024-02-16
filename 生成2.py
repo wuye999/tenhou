@@ -1,6 +1,6 @@
 import json,random,os,re,sys
 import copy
-import pdb
+# import pdb
 
 
 # 在pyinstaller打包环境下返回资源地址
@@ -265,7 +265,9 @@ def party(player):
             try:
                 data[player]['预设牌河'].remove(out_draw)  # 取出
             except:
-                pdb.set_trace()
+                input(f'立直后错误  {out_draw}')
+                exit(0)
+                # pdb.set_trace()
             out_draw = extract_number(out_draw)  # 确定模切该牌
             feel_draw = out_draw
         else:  # 预设牌河对照已打完，从牌山摸牌
@@ -311,9 +313,9 @@ def party(player):
                     data[player]['预设牌河'].remove(feel_draw)  # 取出
                 else:
                     # 已无预设,从牌山摸牌
-                    if player == 'Dさん': 
-                        print(out_draw )   
-                        pdb.set_trace()
+                    # if player == 'Dさん': 
+                    #     print(out_draw )   
+                    #     pdb.set_trace()
                     feel_draw = get_draw()
                     # print(player + '1')
                 out_draw = out_draw  # 确定手切的牌
@@ -374,8 +376,9 @@ def party(player):
         data[player]['手牌'].remove(out_draw)  # 删除选中的值
     except:
         # data[player]['手牌'].remove(extract_number(out_draw))
-        pdb.set_trace()
-        
+        input(f'副露或立直后手切 {out_draw}')
+        exit(0)
+        # set_trace()
     
     # 检查出牌是否为其他家副露，返回副露家选手/None
     Flag2 = byexposed(player)
@@ -570,21 +573,25 @@ def is_r(my_list):
 # 制定配牌    
 def licensing():    
     # 制定配牌    
-    for player in data.keys():
-        # 从牌山取出预设手牌
-        for p in data[player]['预设手牌']:
-            # print(p)
-            cards.remove(extract_number(p))
-        # 从牌山取出预设牌河
-        for p in data[player]['预设牌河']:
-            # print(p)
-            cards.remove(extract_number(p))
-        # 从牌山中取出需要副露的牌
-        for paizu in data[player]['副露']:
-            for pai in Remove_secondary_exposure(paizu):
-                # print(data[player]['副露'])
-                # print(pai)
-                cards.remove(pai)
+    try:
+        for player in data.keys():
+            # 从牌山取出预设手牌
+            for p in data[player]['预设手牌']:
+                # print(p)
+                cards.remove(extract_number(p))
+            # 从牌山取出预设牌河
+            for p in data[player]['预设牌河']:
+                # print(p)
+                cards.remove(extract_number(p))
+            # 从牌山中取出需要副露的牌
+            for paizu in data[player]['副露']:
+                for p in Remove_secondary_exposure(paizu):
+                    # print(data[player]['副露'])
+                    # print(pai)
+                    cards.remove(p)
+    except:
+        input(f'使用了4枚以上相同的牌，或使用了两枚相同的赤宝牌 {p}')
+        exit(0)
     for player in data.keys():
         # 先将需要副露的牌置入配牌
         for paizu in data[player]['副露']:
