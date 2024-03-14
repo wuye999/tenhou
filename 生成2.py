@@ -214,8 +214,8 @@ class PaiSon:
         cards.extend(list(range(31,40)))  # 索
         cards.extend(list(range(41,48)))  # 字
         cards = cards * 4
-        cards.remove(15), cards.remove(25), cards.remove(35)
-        cards.append(51), cards.append(52), cards.append(53)  # 赤宝牌
+        cards.remove(15); cards.remove(25); cards.remove(35)
+        cards.append(51); cards.append(52); cards.append(53)  # 赤宝牌
         return cards
 
     # 生成开局点数
@@ -335,7 +335,7 @@ class Party:
         ## 吃碰时摸牌区显示paizu
         if paizu and ('c' in paizu or 'p' in paizu):
             feel_draw = paizu
-            out_draw = None
+            out_draw = self.get_c_p_out_draw()
         else:
             feel_draw, out_draw =  self.get_pai()
         ## 摸到的牌放入手牌  
@@ -401,12 +401,12 @@ class Party:
         try:
             self.data[self.player]['手牌'].remove(out_draw)  # 删除选中的值
         except:
-            input(f'副露或立直后手切 {self.PlayerBox_1.number_to_mahjong_dict.get(self.PlayerBox_1.extract_number(out_draw), out_draw)}')
+            input(f'副露时模切，或立直后手切 {self.PlayerBox_1.number_to_mahjong_dict.get(self.PlayerBox_1.extract_number(out_draw), out_draw)}')
             # pdb.set_trace()
             exit(0)  
 
     def add_hand(self, feel_draw, paizu):
-         ## 副露不摸牌，不放入手牌
+         ## 吃碰不摸牌，不放入手牌
         if not paizu: self.data[self.player]['手牌'].append(feel_draw)  # 摸到的牌加入手牌
 
 
@@ -465,6 +465,12 @@ class Party:
             feel_draw = self.get_fulu_pai()
         return feel_draw, out_draw
     
+    def get_c_p_out_draw(self):
+        out_draw = None
+        if self.data[self.player]['预设牌河对照']:
+            out_draw = self.data[self.player]['预设牌河对照'][0]
+            self.data[self.player]['预设牌河对照'].remove(out_draw)  # 删除选中的值
+        return out_draw
     
     def get_fulu_pai(self):
         # 非立直前非模切牌河摸牌
