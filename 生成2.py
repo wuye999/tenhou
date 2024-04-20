@@ -193,7 +193,7 @@ class Parsing_config:
     def hand_paihe_end(self):
         for master in ['东家', '南家', '西家', '北家']:
             # pdb.set_trace()
-            if self.assign[master]['手牌']:
+            if self.assign[master]['手牌'] and len(self.assign[master]['手牌']) in [11, 8, 5, 2]:
                 end_shoupai = self.assign[master]['手牌'][-1]
                 self.assign[master]['手牌'].remove(end_shoupai)
                 self.assign[master]['牌河'].append('d' + str(end_shoupai))
@@ -461,6 +461,10 @@ class Party:
         # 模切
         if 'd' in str(out_draw):
             feel_draw = self.die_cut(out_draw)
+        # 立直后模切
+        elif self.PlayerBox_1.is_r(self.data[self.player]['出牌']):
+            feel_draw = self.PaiSon_1.get_draw()
+            out_draw = feel_draw
         else:
             feel_draw = self.get_fulu_pai()
         return feel_draw, out_draw
@@ -511,9 +515,12 @@ class Party:
         richi_bout = self.PlayerBox_1.is_r(self.data[self.player]['牌河牌库'])  # 立直巡目
         if richi_bout:
             richi_bout = richi_bout[0]
-            Lichi_front_paihe = self.data[self.player]['牌河牌库'][:richi_bout-1]
+            Lichi_front_paihe = self.data[self.player]['牌河牌库'][:richi_bout]
             Lichi_front_paihe_nod = [pai for pai in Lichi_front_paihe if 'd' not in str(pai)]
-            return Lichi_front_paihe_nod[0]
+            if Lichi_front_paihe_nod :
+                return True
+            else:
+                return False
         else:
             return None
         
@@ -531,7 +538,7 @@ class Party:
         richi_bout = self.PlayerBox_1.is_r(self.data[self.player]['牌河牌库'])  # 立直巡目
         if richi_bout:
             richi_bout = richi_bout[0]
-            Lichi_front_paihe = self.data[self.player]['牌河牌库'][:richi_bout-1]
+            Lichi_front_paihe = self.data[self.player]['牌河牌库'][:richi_bout]
             Lichi_front_paihe_nod = [pai for pai in Lichi_front_paihe if 'd' not in str(pai)]
             feel_draw = Lichi_front_paihe_nod[0]
             self.data[self.player]['牌河牌库'].remove(feel_draw)
