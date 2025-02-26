@@ -193,7 +193,7 @@ class Parsing_config:
     def hand_paihe_end(self):
         for master in ['东家', '南家', '西家', '北家']:
             # pdb.set_trace()
-            if self.assign[master]['手牌'] and len(self.assign[master]['手牌']) in [11, 8, 5, 2]:
+            if self.assign[master]['手牌'] and len(self.assign[master]['手牌']) in [14, 11, 8, 5, 2]:
                 end_shoupai = self.assign[master]['手牌'][-1]
                 self.assign[master]['手牌'].remove(end_shoupai)
                 self.assign[master]['牌河'].append('d' + str(end_shoupai))
@@ -463,8 +463,9 @@ class Party:
             feel_draw = self.die_cut(out_draw)
         # 立直后模切
         elif self.PlayerBox_1.is_r(self.data[self.player]['出牌']):
-            feel_draw = self.PaiSon_1.get_draw()
+            feel_draw = self.get_fulu_pai()
             out_draw = feel_draw
+            # pdb.set_trace()
         else:
             feel_draw = self.get_fulu_pai()
         return feel_draw, out_draw
